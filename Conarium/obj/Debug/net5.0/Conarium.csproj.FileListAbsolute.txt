@@ -1,0 +1,12 @@
+/home/joosh/Projects/Wasteland/Conarium/bin/Debug/net5.0/Conarium.deps.json
+/home/joosh/Projects/Wasteland/Conarium/bin/Debug/net5.0/Conarium.dll
+/home/joosh/Projects/Wasteland/Conarium/bin/Debug/net5.0/ref/Conarium.dll
+/home/joosh/Projects/Wasteland/Conarium/bin/Debug/net5.0/Conarium.pdb
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/Conarium.csprojAssemblyReference.cache
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/Conarium.GeneratedMSBuildEditorConfig.editorconfig
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/Conarium.AssemblyInfoInputs.cache
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/Conarium.AssemblyInfo.cs
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/Conarium.csproj.CoreCompileInputs.cache
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/Conarium.dll
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/ref/Conarium.dll
+/home/joosh/Projects/Wasteland/Conarium/obj/Debug/net5.0/Conarium.pdb

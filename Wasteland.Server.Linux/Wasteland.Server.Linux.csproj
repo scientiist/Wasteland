@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Conarium\Conarium.csproj" />
+    <ProjectReference Include="..\Wasteland.Common\Wasteland.Common.csproj" />
+    <ProjectReference Include="..\Wasteland.Server\Wasteland.Server.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
