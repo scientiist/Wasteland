@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Conarium.Services
 {
+
+
     public class InputService : Service
     {
         
@@ -35,8 +37,8 @@ namespace Conarium.Services
         MouseState CurrentMouseState {get;set;}
         MouseState PreviousMouseState {get;set;}
 
-        GamePadState CurrentControllerState {get;set;}
-        GamePadState PrreviousControllerState {get;set;}
+        GamePadState[] CurrentControllerStates {get;set;}
+        GamePadState[] PreviousControllerStates {get;set;}
         public InputService(Game game) : base(game)
         {
             Instance = this;
@@ -45,14 +47,17 @@ namespace Conarium.Services
         public override void Initialize()
         {
 
-            Console.WriteLine(GamePad.GetCapabilities(1));
-            CurrentMouseState = Mouse.GetState();
-            CurrentKBState = Keyboard.GetState();
-            CurrentControllerState = GamePad.GetState(1); // TODO: allow handling multiple controllers?
+            CurrentMouseState 		= Mouse.GetState();
+            CurrentKBState 			= Keyboard.GetState();
+            CurrentControllerStates = new GamePadState[4];
+			for (int i = 0; i < 4; i++)
+				CurrentControllerStates[i] = GamePad.GetState(i);
 
-            PreviousMouseState = Mouse.GetState();
-            PreviousKBState = Keyboard.GetState();
-            PrreviousControllerState = GamePad.GetState(1);
+            PreviousMouseState 	= Mouse.GetState();
+            PreviousKBState 	= Keyboard.GetState();
+			PreviousControllerStates = new GamePadState[4];
+			for (int i = 0; i < 4; i++)
+            	PreviousControllerStates[i] = GamePad.GetState(i);
 
 
             base.Initialize();
@@ -61,10 +66,16 @@ namespace Conarium.Services
         public override void Update(GameTime gameTime)
         {
             PreviousKBState = CurrentKBState;
-            CurrentKBState = Keyboard.GetState();
+            CurrentKBState 	= Keyboard.GetState();
 
-            PreviousMouseState = CurrentMouseState;
-            CurrentMouseState = Mouse.GetState();
+            PreviousMouseState 	= CurrentMouseState;
+            CurrentMouseState 	= Mouse.GetState();
+
+			for (int i = 0; i < 4; i++) {
+				PreviousControllerStates[i] = CurrentControllerStates[i];
+				CurrentControllerStates[i] 	= GamePad.GetState(i);
+			}
+			
             base.Update(gameTime);
         }
 
@@ -93,8 +104,12 @@ namespace Conarium.Services
         public bool MMBReleased() => !GetMMB(CurrentMouseState) && GetMMB(PreviousMouseState);
 
 
-        public bool ButtonPressed(Buttons btn) => CurrentControllerState.IsButtonDown(btn) && !PrreviousControllerState.IsButtonDown(btn);
-        public bool ButtonReleased(Buttons btn) => !CurrentControllerState.IsButtonDown(btn) && PrreviousControllerState.IsButtonDown(btn);
-        public bool GetButton(Buttons btn) => CurrentControllerState.IsButtonDown(btn);
+        public bool ButtonPressed(Buttons btn, int plr = 0) 
+			=> CurrentControllerStates[plr].IsButtonDown(btn) 
+			&& !PreviousControllerStates[plr].IsButtonDown(btn);
+        public bool ButtonReleased(Buttons btn, int plr = 0) 
+			=> !CurrentControllerStates[plr].IsButtonDown(btn) 
+			&& PreviousControllerStates[plr].IsButtonDown(btn);
+        public bool GetButton(Buttons btn, int plr = 0) => CurrentControllerStates[plr].IsButtonDown(btn);
     }
 }
