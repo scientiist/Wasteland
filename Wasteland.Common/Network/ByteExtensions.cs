@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Wasteland.Common.Network
 {
@@ -281,6 +282,72 @@ namespace Wasteland.Common.Network
             if (t == typeof(uint)) return FromUInt((uint)obj);
             if (t == typeof(Guid)) return FromGuid((Guid)obj);
             throw new Exception("Type conversion not defined: " + t.ToString());
+        }
+    }
+
+	public static class ByteArrayExtensions
+	{
+		public static void Set(ref this byte a, int pos, bool value)
+		{
+			if (value)
+				a = (byte)(a | (1 << pos));
+			else
+				a = (byte)(a & ~(1 << pos));
+		}
+
+		public static bool Get(this byte a, int pos) => ((a & (1 << pos)) != 0);
+
+
+		public static string ToHexString(this byte[] data, int index, int length)
+		{
+			StringBuilder bob = new StringBuilder();
+			for (int i = 0; i < length; i++)
+			{
+				bob.Append(String.Format("{0:X2} ", data[i + index]));
+			}
+			return bob.ToString();
+		}
+
+		public static string ToHexString(this byte[] data) => data.ToHexString(0, data.Length);
+	}
+
+	// serialize monogame types
+	public static class MonoGameByteArrayExtensions 
+    {
+		/// <summary>
+		/// Data Length = 8 (2*float)
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public static Vector2 ReadVector2(this byte[] data, int index)=> new Vector2(data.ReadFloat(index), data.ReadFloat(index + 4));
+		/// <summary>
+		/// Data Length = 8 (2*float)
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="index"></param>
+		/// <param name="value"></param>
+        public static void WriteVector2(this byte[] data, int index, Vector2 value)
+        {
+			data.WriteFloat(index, value.X);
+			data.WriteFloat(index + 4, value.Y);
+        }
+		public static Color ReadColorRGBA(this byte[] data, int index) => new Color(data[index], data[index + 1], data[index + 2], data[index+3]);
+		/// <summary>
+		/// Data Length = 4 (4*byte)
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="index"></param>
+		/// <param name="value"></param>
+		public static void WriteColorRGBA(this byte[] data, int index, Color value)
+        {
+			data[index] = value.R;
+			data[index + 1] = value.G;
+			data[index + 2] = value.B;
+			data[index + 3] = value.A;
+
+
+			byte[] somedata = new byte[20];
         }
     }
 }
