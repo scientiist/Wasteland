@@ -27,7 +27,7 @@ namespace Conarium.Services
 
         public void SetClipboard(string contents)
         {
-            
+            Clipboard = contents;
         }
 
 

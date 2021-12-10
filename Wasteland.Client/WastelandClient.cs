@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System;
 using System.IO;
 using Conarium;
@@ -7,6 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TiledCS;
+using Wasteland.Client.Menus;
+using Wasteland.Server;
 
 namespace Wasteland.Client
 {
@@ -14,18 +17,26 @@ namespace Wasteland.Client
 	{
 		IContext CurrentContext {get;set;}
 		Game GameReference {get;}
+
+		void ConnectToServer(string address);
 	}
 
     public class WastelandClient : Game, IGameClient
     {
+		#region Game-centric metadata
+		public readonly static string CurrentVersion = "0.1";
+
+		#endregion
 
 		public Game GameReference => this;
-        public readonly static string CurrentVersion = "0.1";
+        
 
         #region Conarium Services
         public Conarium.Services.AssetService    AssetService    {get; private set;}
         public Conarium.Services.GraphicsService GraphicsService {get; private set;}
         public Conarium.Services.InputService    InputService    {get; private set;}
+
+		public Settings Configuration {get;set;}
         
 		public GameClient SessionInstance {get; private set;}
 		#endregion
@@ -80,10 +91,22 @@ namespace Wasteland.Client
             
 
 			Splash = new Splash(this);
+			Configuration = Settings.Load<Settings>("settings.xml", true);
             SetFullscreen(false);
             SetVSync(false);
             GraphicsDeviceManager.ApplyChanges();
-        }
+		}
+
+		public void ConnectToServer(string address)
+		{
+			HeadlessServer server = new HeadlessServer();
+			server.Logger = GameConsole; 
+			Task.Factory.StartNew(server.Start);
+			var client = new GameClient(this);
+			//TODO: client.OnShutdown += server.Shutdown;
+			CurrentContext = client;
+			client.Connect(address);
+		}
 
 		#region Settings-Related Methods
         public void TakeScreenshot(string filename = "")
@@ -176,20 +199,12 @@ namespace Wasteland.Client
         protected override void Initialize()
         {
 
-            SessionInstance = new GameClient();
-			SessionInstance.Connect("localhost:40269");
-
             CreateServices();
 
 			CurrentContext = new MainMenu(this);
 
             // bind callback to listen for window resize
             Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
-
-
-            //MainMenu = new MainMenu(this);
-            //SettingsMenu = new WindowNode("Settings", 400, 200);
-            //SettingsMenu.Parent = MainMenu.Scene;
 
             base.Initialize();
         }
@@ -204,6 +219,13 @@ namespace Wasteland.Client
         }
         protected override void Update(GameTime gameTime)
         {
+
+
+
+
+			var state = GamePad.GetState(0);
+			Console.WriteLine(state);
+			
             
 			if (CurrentContext!=null && CurrentContext.Running)
 				CurrentContext?.Update(gameTime);
@@ -213,7 +235,7 @@ namespace Wasteland.Client
 
             Mouse.SetCursor(MouseCursor.Arrow);
 
-            if (InputService.KeyPressed(Keys.OemTilde))
+            if (Settings.Get().Keybindings.OpenGameConsole.IsDown())
             {
                 Console.WriteLine("Fucking hell");
                 GameConsole.Open = !GameConsole.Open;
@@ -270,17 +292,14 @@ namespace Wasteland.Client
 			if (CurrentContext!=null && CurrentContext.Running)
 				CurrentContext.Draw();
 
-            //MainMenu.Draw();
 
             Splash?.Draw();
 
-                
-            DrawDebuggingStats(gameTime);
-
+  
             // Components aren't drawn automatically
             // so we need to draw the GameConsole ourselves out here
             GameConsole.Draw();
-
+			DrawDebuggingStats(gameTime);
             //--------------------------
             base.Draw(gameTime);
         }
