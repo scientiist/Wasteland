@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Conarium.Services;
+using Conarium;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 

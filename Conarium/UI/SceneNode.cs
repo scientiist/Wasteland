@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Conarium.Extension;
-using Conarium.Services;
+using Conarium;
 using Microsoft.Xna.Framework;
 
 

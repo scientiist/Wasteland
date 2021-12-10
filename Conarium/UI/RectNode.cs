@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using Conarium.Services;
+using Conarium;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 

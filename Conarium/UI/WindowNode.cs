@@ -1,5 +1,5 @@
 using System;
-using Conarium.Services;
+using Conarium;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -18,7 +18,7 @@ namespace Conarium.UI
         {
 
             Size = UIVector.FromPixels(width, height);
-            RectColor = new Color(0.2f, 0.2f, 0.25f, 0.8f);
+            RectColor = new Color(0f, 0f, 0.1f, 0.8f);
             BorderSize = 2;
             BorderColor = new Color(0.2f, 0.2f, 0.3f);
             MinimumWindowSize = new Vector2(200, 100);
@@ -40,8 +40,8 @@ namespace Conarium.UI
                 Font = GraphicsService.Get().Fonts.Arial12,
                 TextColor = Color.White,
                 Parent = TitleBar,
-                YAlignment = Services.TextYAlignment.Center,
-                XAlignment = Services.TextXAlignment.Center,
+                YAlignment = TextYAlignment.Center,
+                XAlignment = TextXAlignment.Center,
             };
 
             CloseButton = new ButtonNode("closebutton")
@@ -51,15 +51,15 @@ namespace Conarium.UI
                 Position = new UIVector(-30, 0, 1, 0),
                 BorderSize = 0,
             };
-            CloseButton.OnPressed += (e,s) => this.Visible = false;
+            //CloseButton.OnPressed += (e,s) => this.Visible = false;
             var closeButtonXText = new TextNode("x")
             {
                 Font = GraphicsService.Get().Fonts.Arial16,
                 TextColor = new Color(0.6f, 0.6f, 1f),
                 Text = "X",
                 Parent = CloseButton,
-                YAlignment = Services.TextYAlignment.Center,
-                XAlignment = Services.TextXAlignment.Center,
+                YAlignment = TextYAlignment.Center,
+                XAlignment = TextXAlignment.Center,
             };
 
             Content = new RectNode("content")

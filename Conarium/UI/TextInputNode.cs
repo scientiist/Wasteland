@@ -1,7 +1,7 @@
 using System.Net.Mime;
 using System;
 using System.Collections.Generic;
-using Conarium.Services;
+using Conarium;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Conarium.Extension;
@@ -51,7 +51,7 @@ namespace Conarium.UI
             if (BlacklistedCharacters.Contains(args.Character))
                 return;
 
-            if (args.Key == Keys.Tab)
+            if (args.Key == Keys.Tab || args.Key == Keys.Escape)
                 return;
 
             if (args.Key == Keys.Enter)
@@ -230,9 +230,9 @@ namespace Conarium.UI
                     return;
                 }
                 if (Input.KeyPressed(Keys.Right))
-                    CursorPosition = Math.Clamp(0, CursorPosition+1, InputBuffer.Length);
+                    CursorPosition = Math.Clamp(CursorPosition+1, 0, InputBuffer.Length);
                 if (Input.KeyPressed(Keys.Left))
-                    CursorPosition = Math.Clamp(0, CursorPosition-1, InputBuffer.Length);
+                    CursorPosition = Math.Clamp(CursorPosition-1, 0, InputBuffer.Length);
             }
             
             CursorPosition = Math.Max(CursorPosition, 0);

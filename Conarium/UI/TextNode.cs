@@ -1,5 +1,5 @@
 using System.Text;
-using Conarium.Services;
+using Conarium;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
