@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Wasteland.Common\Wasteland.Common.csproj" />
     <ProjectReference Include="..\Conarium\Conarium.csproj" />
+    <ProjectReference Include="..\Wasteland.Server\Wasteland.Server.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

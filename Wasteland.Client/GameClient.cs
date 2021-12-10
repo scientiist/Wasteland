@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Wasteland.Client.Network;
 using Wasteland.Common.Network;
 using Conarium.Extension;
-using Conarium.Services;
+using Conarium;
 using System.Linq;
 using Wasteland.Common;
 using System.Reflection;
@@ -36,12 +36,13 @@ namespace Wasteland.Client
         public ClientSubsystem NetworkManager {get;private set;}
 
 		public Gameworld World {get;set;}
+		public Action OnShutdown { get; internal set; }
 
 		public delegate void NetworkListener(NetworkMessage message);
 
 		Dictionary<PacketType, NetworkListener> NetworkEvents;
 
-        public GameClient(IGameClient client) : base(client) 
+        public GameClient(WastelandClient client) : base(client) 
         {
 			NetworkEvents = new Dictionary<PacketType, NetworkListener>()
 			{
@@ -65,6 +66,19 @@ namespace Wasteland.Client
 			});
         }
 
+		public void Connect(string address)
+        {
+			GameConsole.Get().Log($"Client starting: connecting to {address}");
+			NetworkManager = new ClientSubsystem(address);
+			NetworkManager.Start();
+            NetworkManager.SendPacket(new QueryServerPacket(Wasteland.Common.Constants.NetworkProtocolVersion));
+			Status = ConnectionStatus.Connecting;
+
+			ConnectionTimeout = 10;
+            //NetworkManager.Listen(PacketType.InterrogationResponse, OnServerRespondsToInterrogation);
+        }
+
+		public virtual void Disconnect() { }
 
 		#region Network Methods
 		void OnConnectApproved(NetworkMessage msg)
@@ -88,17 +102,29 @@ namespace Wasteland.Client
 		{
 			var packet = new SpawnEntityPacket(msg.Packet.GetBytes());
 
-			Entity spawned;
+			Entity spawned = null;
 			switch(packet.EntityType)
 			{
 				case EntityType.PeerPlayer:
-					spawned = new PeerPlayer(packet.AssignedNetworkID);
+					spawned = new PeerPlayer(packet.AssignedNetworkID)
+					{
+
+					};
 					break;
 				case EntityType.Player:
-					spawned = new LocalPlayer(packet.AssignedNetworkID);
+					spawned = new LocalPlayer(packet.AssignedNetworkID)
+					{
+
+					};
 					break;
 				default:
 					break;
+			}
+
+			if (spawned != null)
+			{
+				World.Entities.Add(spawned);
+				LogService.Log(this, $"");
 			}
 
 			
@@ -109,21 +135,9 @@ namespace Wasteland.Client
 		void OnEntityAction(NetworkMessage msg) { }
 
 
-        public void Connect(string address)
-        {
-			GameConsole.Get().Log($"Client starting: connecting to {address}");
-			NetworkManager = new ClientSubsystem(address);
-			NetworkManager.Start();
-            NetworkManager.SendPacket(new QueryServerPacket(Wasteland.Common.Constants.NetworkProtocolVersion));
-			Status = ConnectionStatus.Connecting;
+        
 
-			ConnectionTimeout = 10;
-            //NetworkManager.Listen(PacketType.InterrogationResponse, OnServerRespondsToInterrogation);
-        }
-
-		public virtual void Disconnect() { }
-
-		private void OnServerRespondsToInterrogation(NetworkMessage data)
+		void OnServerRespondsToInterrogation(NetworkMessage data)
 		{
 			var packet = new QueryResponsePacket(data.Packet.GetBytes());
 

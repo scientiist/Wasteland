@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq;
 using System.Security.AccessControl;
 using System;
@@ -130,12 +131,44 @@ namespace Wasteland.Client
 
 	// put it all together to get our Settings class
 
+	public class SettingsChangedEventArgs<T> : EventArgs
+	{
+		public bool Cancelled {get;set;}
+		public T PreviousValue {get;set;}
+		public T NewValue {get;set;}
+		public void SetCancelled(bool cancelled = true)
+		{
+			Cancelled = cancelled;
+		}
+
+		public SettingsChangedEventArgs(T oldVal, T newVal)
+		{
+			Cancelled = false;
+			PreviousValue = oldVal;
+			NewValue = newVal;
+		}
+	}
+
+	public delegate void SettingsEvent<T>(SettingsChangedEventArgs<T> arg);
+
     public class Settings : XMLConfiguration
     {
+
+		public static Settings LoadSettings(WastelandClient client, string path)
+		{
+			var sets = Wasteland.Client.Settings.Load<Settings>(path, true);
+			sets.Game = client;
+			return sets;
+		}
+
+		WastelandClient Game;
+
 		[XmlIgnore] static Settings Instance;
+
 		public static Settings Get() => Instance;
 		public Settings() : base()
 		{
+			
 			Instance = this;
 			Keybindings = new Keybinds();
 		}
@@ -143,7 +176,24 @@ namespace Wasteland.Client
 
 		[Checkbox("V-Sync", false, "On", "Off")] public bool VerticalSync {get;set;} = false;
 
-		[EnumList("Language")] public Language Language {get;set;}
+
+		public event SettingsEvent<Language> OnLanguageUpdated;
+		Language language;
+		[EnumList("Language")] public Language Language
+		{
+			get => language;
+			set {
+				var ev = new SettingsChangedEventArgs<Language>(language, value);
+				OnLanguageUpdated?.Invoke(ev);
+				if (!ev.Cancelled)
+					language = value;
+			}
+		}
+		
+		
+		public bool HasPlayedBefore {get;set;} = false;
+		
+		
 
 		public Keybinds Keybindings {get;set;}
 

@@ -7,36 +7,27 @@ using System.Linq;
 using Conarium;
 using Microsoft.Xna.Framework;
 using Wasteland.Common.Network;
+using Wasteland.Common;
 
 namespace Wasteland.Server
 {
-	public interface IServerOutput
-	{
-		void Log(string text);
-		void Log(string text, ConsoleColor fg, ConsoleColor bg, bool timestamp);
-	}
-	public interface IServerInput
-	{
-		void SendCommand(string command);
-	}
-
-
 	public class BaseServer : ICommandSender, ICommandReciever
-	{ 
+	{
+		#region Config File props
 		public int Port {get; set;} = 42069;
 		public int MaxPlayers {get;set;} = 20;
 		public int TickRateMS {get;set;} = 20; // 1000/20 = 40 ticks/second
 
+		public bool RequiresPassword {get;set;} = false;
+
+
+		#endregion
+		
 		public IServerInput Input {get; set;}
 		public IServerOutput Logger {get; set;}
-
 		public bool Running {get;set;}
-
-
 		public ServerSubsystem NetworkManager {get;private set;}
 		public List<User> ConnectedUsers {get;private set;}
-
-
 		// ICommandSender Properties
 		public Color SenderColor => Color.White;
 		public string Name => "Wasteland Server";
@@ -45,11 +36,7 @@ namespace Wasteland.Server
 
 		// Networking events and such
 		public delegate void NetworkListener(NetworkMessage message);
-		private static Dictionary<PacketType, NetworkListener> NetworkEvents = new Dictionary<PacketType, NetworkListener>()
-		{
-			[PacketType.Acknowledge] = (msg) => {},
-			[PacketType.Ignore] = (msg) => {},
-		};
+		private Dictionary<PacketType, NetworkListener> NetworkEvents;
 		
 		// Commands
 		public List<Command> Commands {get; set;}
@@ -80,9 +67,9 @@ namespace Wasteland.Server
 				// TODO: print help information for command
 				return;
 			}
-			Logger.Log("Available Commands:",  ConsoleColor.DarkGreen, ConsoleColor.White, false);
+			Logger?.Log("Available Commands:",  ConsoleColor.DarkGreen, ConsoleColor.White, false);
 			foreach(var command in Commands)
-				Logger.Log($"{command.Keyword} {command.Description}", ConsoleColor.DarkGreen, ConsoleColor.White, false);
+				Logger?.Log($"{command.Keyword} {command.Description}", ConsoleColor.DarkGreen, ConsoleColor.White, false);
 		}
 
 		void ExitServer(CommandEventArgs e)
@@ -94,8 +81,6 @@ namespace Wasteland.Server
 		}
 
 		#endregion
-
-
 
 		public BaseServer()
 		{
@@ -120,12 +105,87 @@ namespace Wasteland.Server
 				Callback=SayHelp
 			});
 			#endregion
+
+
+			NetworkEvents = new Dictionary<PacketType, NetworkListener>()
+			{
+				[PacketType.QueryServer] = OnServerQuery,
+				[PacketType.RequestConnect] = OnConnectRequest,
+				
+			};
+		}
+
+		// server information requested by potential client
+		void OnServerQuery(NetworkMessage message)
+		{
+			QueryServerPacket packet = new QueryServerPacket(message.Packet.GetBytes());
+
+			ProtocolStatus versionComparison = ProtocolStatus.Match;
+			bool isCompat = false;
+
+			// protocol match
+			if (packet.ClientProtocolCode == Wasteland.Common.Constants.NetworkProtocolVersion)
+			{
+				versionComparison = ProtocolStatus.Match;
+				isCompat = true;
+			
+			} // server out of date
+			else if (packet.ClientProtocolCode > Wasteland.Common.Constants.NetworkProtocolVersion)
+			{
+				versionComparison = ProtocolStatus.ServerOutOfDate;
+			} // client out of date
+			else if (packet.ClientProtocolCode < Wasteland.Common.Constants.NetworkProtocolVersion)
+			{
+				versionComparison = ProtocolStatus.ClientOutOfDate;
+			}
+
+			var response = new QueryResponsePacket()
+			{
+				Status = versionComparison,
+				ProtocolCompatible = isCompat,
+				RequiresPassword = RequiresPassword,
+				MaxPlayers = MaxPlayers,
+				CurrentPlayerCount = ConnectedUsers.Count,
+			};
+		}
+
+		void OnConnectRequest(NetworkMessage message)
+		{
+			RequestConnectPacket packet = new RequestConnectPacket(message.Packet.GetBytes());
+
+			// TODO: sanity check inputs and confirm server can take player
+			// TODO: password check
+
+			bool success = true;
+
+
+			if (success)
+			{
+				User newClientPeer = new User();
+
+				ConnectedUsers.Add(newClientPeer);
+
+
+				AcceptConnectRequestPacket accept = new AcceptConnectRequestPacket();
+
+
+				NetworkManager.SendPacket(accept, message.Sender);
+
+
+			}
+			else
+			{
+				RejectConnectRequestPacket reject = new RejectConnectRequestPacket("fuck you that's why");
+
+				NetworkManager.SendPacket(reject, message.Sender);
+			}
 		}
 
 		public virtual void Start()
 		{
 			NetworkManager = new ServerSubsystem(Port);
-			Logger.Log("Wasteland Server Initialized...");
+			NetworkManager.Start();
+			Logger?.Log("Wasteland Server Initialized...");
 			Task.Run(GameserverThreadLoop);
 		}
 
@@ -134,7 +194,6 @@ namespace Wasteland.Server
 		{
 			NetworkManager.Update(gt);
 			ReadIncomingPackets();
-			
 		}
 
 		public void GameserverThreadLoop()
@@ -159,9 +218,13 @@ namespace Wasteland.Server
 			while (NetworkManager.HaveIncomingMessage())
 			{
 				NetworkMessage message = NetworkManager.GetLatestMessage();
+				Logger.Log("Gota fuckin MESSAGE");
 				foreach(var ev in NetworkEvents)
 				{
-
+					if (ev.Key == message.Packet.Type)
+					{
+						ev.Value?.Invoke(message);
+					}
 				}
 			}
 		}

@@ -86,13 +86,13 @@ namespace Wasteland.Client
 
 			// draw monogame logo at bottom left;
 
-			var mgLogoScaleFrac = 2f;
+			var mgLogoScaleFrac = 0.5f;
 			var mgLogoDimensions = new Vector2(MonoGameLogo.Width, MonoGameLogo.Height)/mgLogoScaleFrac;
-			var bottomRight = new Vector2(0, GFX.WindowSize.Y-mgLogoDimensions.Y);
+			var bottomLeft = new Vector2(0, GFX.WindowSize.Y-mgLogoDimensions.Y);
 
 			GFX.Sprite(
 				texture: MonoGameLogo, 
-				position: bottomRight, 
+				position: bottomLeft, 
 				quad: null, 
 				color: drawColor, 
 				rotation: Rotation.Zero,
@@ -104,9 +104,22 @@ namespace Wasteland.Client
 
 
 			// draw fedora logo
-			var fedoraLogoScaleFrac = 2f;
+			var fedoraLogoScaleFrac = 0.5f;
 			var fedoraLogoDimensions = new Vector2(FedoraLogo.Width, FedoraLogo.Height)/fedoraLogoScaleFrac;
+			var bottomRight = new Vector2(GFX.WindowSize.X-fedoraLogoDimensions.X, GFX.WindowSize.Y-fedoraLogoDimensions.Y);
+			
 
+			GFX.Sprite(
+				texture: FedoraLogo,
+				position: bottomRight,
+				quad: null,
+				color: drawColor,
+				rotation: Rotation.Zero,
+				origin: Vector2.Zero,
+				scale: new Vector2(1/fedoraLogoScaleFrac, 1/fedoraLogoScaleFrac),
+				efx: SpriteEffects.None,
+				layer: 1
+			);
 
 			GFX.End();
 		}

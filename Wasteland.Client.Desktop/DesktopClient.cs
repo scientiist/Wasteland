@@ -1,5 +1,6 @@
 ﻿
-using Conarium.Services;
+using Conarium;
+using Wasteland.Client;
 
 namespace Wasteland.Client.Desktop
 {

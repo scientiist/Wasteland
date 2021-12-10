@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace Conarium.Services
+namespace Conarium
 {
     public interface IService 
     {

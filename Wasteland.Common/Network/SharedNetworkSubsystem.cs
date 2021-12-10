@@ -102,12 +102,6 @@ namespace Wasteland.Common.Network
             throw new Exception("No Message Queued! Used HaveIncomingMessage() to check!");
         }
 
-
-        public delegate void PacketListener(NetworkMessage message);// where TPacket: Packet;
-        public Dictionary<PacketType, PacketListener> AutomaticCallbacks = new Dictionary<PacketType, PacketListener>();
-
-		public void Listen(PacketType type, PacketListener callback) => AutomaticCallbacks.Add(type, callback);
-
         protected virtual void ReadIncomingPackets()
         {
             bool canRead = UdpSocket.Available > 0;
@@ -122,17 +116,13 @@ namespace Wasteland.Common.Network
                 nm.Packet = new Packet(data);
                 nm.ReceiveTime = DateTime.Now;
 
+				Console.WriteLine($"{DeviceName} Recieved {nm.Packet.Type} from {nm.Sender} at {nm.ReceiveTime}: {nm.Packet.GetBytes().ToHexString()} ");
+
                 IncomingMessages.Enqueue(nm);
                 PacketsReceived++;
                 TotalBytesReceived += nm.Packet.Payload.Length;
                 InternalReceiveCount += nm.Packet.Payload.Length;
                 LatestReceiveTimestamp = DateTime.Now;
-
-                if (AutomaticCallbacks.ContainsKey(nm.Packet.Type))
-                {
-                    AutomaticCallbacks[nm.Packet.Type]?.Invoke(nm);
-                }
-
             }
         }
 
@@ -140,8 +130,6 @@ namespace Wasteland.Common.Network
         {
             int outQCount = OutgoingMessages.Count;
 
-
-           
             // write out queued messages
             for (int i = 0; i < outQCount; i++)
             {
@@ -150,6 +138,7 @@ namespace Wasteland.Common.Network
 
                 if (have)
                 {
+					Console.WriteLine($"{DeviceName} Sending {packet.Payload.Type} to {packet.TargetAddress}: {packet.Payload.GetBytes().ToHexString()}  ");
                     if (packet.TargetAddress == null)
                         packet.Payload.Send(UdpSocket);    
                     else

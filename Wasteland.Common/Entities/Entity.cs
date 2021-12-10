@@ -1,9 +1,20 @@
 using System;
 using Conarium.Datatypes;
+using Conarium;
 using Microsoft.Xna.Framework;
 
 namespace Wasteland.Common
 {
+
+	public enum EntityType
+	{
+		Player,
+		PeerPlayer,
+		Zombie,
+		MutatedZombie,
+		ZombieNoLegs,
+
+	}
 
     public interface INetworkEntity
     {
@@ -19,9 +30,7 @@ namespace Wasteland.Common
         Vector2 Velocity {get;set;}
         Vector2 Friction {get;set;}
         float Mass {get;}
-
     }
-
 
 
     // entities w/ this interface will run server-sided physics
@@ -43,33 +52,48 @@ namespace Wasteland.Common
         public Guid EntityUUID {get; set;}
         public virtual bool ServerAuthoritative {get;set;}
 
-        public Vector2 Position {get;}
-        public Vector2 BoundingBox {get;}
-        public Rotation Direction {get;}
+        public Vector2 Position {get; set;}
+        public virtual Vector2 BoundingBox {get;}
+        public Rotation Direction {get; set;}
 
         public float Age {get; private set;}
         public bool Dead {get;set;}
 
 
+		public Entity(Guid networkUUID)
+		{
+			EntityUUID = networkUUID;
+			Direction = Rotation.Zero;
+		}
+
         public virtual void Update(GameTime gt)
         {
-            
+
         }
 
 
         public virtual void Draw()
         {
+			var gfx = GraphicsService.Get();
 
+
+			gfx.Circle(Color.Red, Position, 8, 16, 1);
+			gfx.Line(Color.White, Position, 24, Direction, 2);
         }
 
     }
 
     public abstract class PhysicsEntity : Entity, IPhysicsEntity
     {
-        public abstract Vector2 NextPosition { get; set; }
+		public PhysicsEntity(Guid networkUUID) : base(networkUUID)
+		{
+
+		}
+
+		public abstract Vector2 NextPosition { get; set; }
         public abstract Vector2 Velocity { get; set; }
         public abstract Vector2 Friction { get; set; }
         public abstract float Mass { get; }
-        Vector2 IPhysicsEntity.Position { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+
     }
 }

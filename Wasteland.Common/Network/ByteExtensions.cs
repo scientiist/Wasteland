@@ -311,7 +311,9 @@ namespace Wasteland.Common.Network
 		public static string ToHexString(this byte[] data) => data.ToHexString(0, data.Length);
 	}
 
-	// serialize monogame types
+	/// <summary>
+	/// Extension Methods to work with MonoGame datatypes
+	/// </summary>
 	public static class MonoGameByteArrayExtensions 
     {
 		/// <summary>

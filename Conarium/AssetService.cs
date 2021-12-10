@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using MonoGame.Framework.Content.Pipeline.Builder;
 using Microsoft.Xna.Framework.Content.Pipeline.Audio;
 
-namespace Conarium.Services
+namespace Conarium
 {
     /// <summary>
     /// A method to generate / return effect per mesh part.

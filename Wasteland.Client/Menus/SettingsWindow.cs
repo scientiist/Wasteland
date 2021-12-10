@@ -35,7 +35,7 @@ namespace Wasteland.Client.Menus
 
 		public override void Initialize()
 		{
-			throw new NotImplementedException();
+			
 		}
 	}
 }

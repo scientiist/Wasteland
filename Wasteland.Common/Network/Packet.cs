@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
 using System;
@@ -16,61 +17,18 @@ namespace Wasteland.Common.Network
     }
     
 
-    public enum PacketType {
-        InterrogateServer,
-        InterrogationResponse,
-		RequestJoin, AcceptJoinRequest, RejectJoinRequest,
-        Acknowledge, Ignore }
-
-
-    public static class MonoGameByteArrayExtensions // serialize monogame types
-    {
-		/// <summary>
-		/// Data Length = 8 (2*float)
-		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		public static Vector2 ReadVector2(this byte[] data, int index)=> new Vector2(data.ReadFloat(index), data.ReadFloat(index + 4));
-		/// <summary>
-		/// Data Length = 8 (2*float)
-		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="index"></param>
-		/// <param name="value"></param>
-        public static void WriteVector2(this byte[] data, int index, Vector2 value)
-        {
-			data.WriteFloat(index, value.X);
-			data.WriteFloat(index + 4, value.Y);
-        }
-		public static Color ReadColorRGBA(this byte[] data, int index) => new Color(data[index], data[index + 1], data[index + 2], data[index+3]);
-		/// <summary>
-		/// Data Length = 4 (4*byte)
-		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="index"></param>
-		/// <param name="value"></param>
-		public static void WriteColorRGBA(this byte[] data, int index, Color value)
-        {
-			data[index] = value.R;
-			data[index + 1] = value.G;
-			data[index + 2] = value.B;
-			data[index + 3] = value.A;
-
-
-			byte[] somedata = new byte[20];
-        }
+    public enum PacketType : uint {
+        QueryServer, 
+		QueryResponse,
+		RequestConnect, 
+		AcceptConnectRequest, 
+		RejectConnectRequest,
+		Disconnect,
+		SpawnEntity,
+		DespawnEntity,
+		UpdateEntityPhysicsState,
+		EntityAction,
     }
-
-    public class PacketSchemaAttribute : Attribute
-    {
-        public PacketType Type;
-        public PacketSchemaAttribute(PacketType type)
-        {
-            Type = type;
-        }
-    } 
-
 
     public class Packet
     {
@@ -109,6 +67,10 @@ namespace Wasteland.Common.Network
             int i = 0;
             byte[] bytes = new byte[ptSize + tsSize + Payload.Length];
 
+
+			BitConverter.GetBytes((uint)this.Type).CopyTo(bytes, i);
+			i += ptSize;
+
             BitConverter.GetBytes(Timestamp).CopyTo(bytes, i);
             i += tsSize;
 
@@ -119,7 +81,7 @@ namespace Wasteland.Common.Network
             return bytes;
         }
 
-        public override string ToString() { return ""; }
+        public override string ToString() => Payload.ToHexString(0, Payload.Length);
 
         // Send packet to specific endpoint
         public void Send(UdpClient client, IPEndPoint reciever)
@@ -134,49 +96,18 @@ namespace Wasteland.Common.Network
             byte[] bytes = GetBytes();
             client.Send(bytes, bytes.Length);
         }
-    }
 
-
-    [PacketSchema(PacketType.Acknowledge)]
-    public class MessagePacket : Packet
-    {
 		
-        public int MessageLengthBytes
-        {
-            get => Payload.ReadInt(0);
-			set => Payload.WriteInt(0, value);
-        }
-        public string Message
-        {
-            get => Encoding.UTF8.GetString(Payload, 4, MessageLengthBytes);
-            set {
-                MessageLengthBytes = GetUTF8ByteLength(value);
-                Encoding.UTF8.GetBytes(value).CopyTo(Payload, 4);
-            }
-        }
-
-        
-
-
-		public MessagePacket(byte[] data) : base(data) {}
-        public MessagePacket(string message) : base(PacketType.Acknowledge)
-        {
-            Payload = new byte[16+GetUTF8ByteLength(message)];
-            Message = message;
-            //MessageLengthBytes = Message.Length;
-        }
     }
 
-    [PacketSchema(PacketType.InterrogateServer)]
-    public class InterrogateServerPacket : Packet
+    public class QueryServerPacket : Packet
     {
-
         public int ClientProtocolCode { // used to match versions between server and client
             get => Payload.ReadInt(0);
             set => Payload.WriteInt(0, value);
         }
-        public InterrogateServerPacket(byte[] data) : base(data) {}
-        public InterrogateServerPacket(int protocolID) : base(PacketType.InterrogateServer)
+        public QueryServerPacket(byte[] data) : base(data) {}
+        public QueryServerPacket(int protocolID) : base(PacketType.QueryServer)
         {
             Payload = new byte[16];
             ClientProtocolCode = protocolID;
@@ -184,24 +115,39 @@ namespace Wasteland.Common.Network
     }
 
 
-    public class InterrogationResponsePacket : Packet
+	public enum ProtocolStatus
+	{
+		Match,
+		ClientOutOfDate,
+		ServerOutOfDate,
+	}
+
+    public class QueryResponsePacket : Packet
     {
-		public bool ProtocolCompatible {get;set;}
+		public bool ProtocolCompatible 
+		{
+			get => Payload[0].Get(0);
+			set => Payload[0].Set(0, value);
+		}
+		public ProtocolStatus Status {get;set;}
+
 		public int MaxPlayers {get;set;}
 		public int CurrentPlayerCount {get;set;}
 
 		public bool RequiresPassword {get;set;}
+		public string ServerName {get;set;}
 
-        public InterrogationResponsePacket() : base(PacketType.InterrogationResponse)
+        public QueryResponsePacket() : base(PacketType.QueryResponse)
         {
+			Payload = new byte[256];
         }
 
-        public InterrogationResponsePacket(byte[] bytes) : base(bytes)
+        public QueryResponsePacket(byte[] bytes) : base(bytes)
         {
         }
     }
 
-    public class RequestJoinServerPacket : Packet
+    public class RequestConnectPacket : Packet
     {
 
 		public int UsernameLengthBytes
@@ -220,58 +166,150 @@ namespace Wasteland.Common.Network
 
 		public int PasswordLengthBytes
         {
-            get => Payload.ReadInt(4+UsernameLengthBytes);
-			set => Payload.WriteInt(4+UsernameLengthBytes, value);
+            get => Payload.ReadInt(128);
+			set => Payload.WriteInt(128, value);
         }
         public string Password
         {
-            get => Encoding.UTF8.GetString(Payload, 4+UsernameLengthBytes, PasswordLengthBytes);
+            get => Encoding.UTF8.GetString(Payload, 132, PasswordLengthBytes);
             set {
-                UsernameLengthBytes = GetUTF8ByteLength(value);
+                PasswordLengthBytes = GetUTF8ByteLength(value);
+                Encoding.UTF8.GetBytes(value).CopyTo(Payload, 132);
+            }
+        }
+
+		public int NetworkProtocolVersion 
+		{
+			get => Payload.ReadInt(256);
+			set => Payload.WriteInt(256, value);
+		}
+
+        public RequestConnectPacket(string user, string pass, int protocol) : base(PacketType.RequestConnect)
+        {
+			Payload = new byte[1024];
+			int lengthOfTokens = GetUTF8ByteLength(user) + GetUTF8ByteLength(pass);
+			
+			Username = user;
+			Password = pass;
+			NetworkProtocolVersion = protocol; // protocol is also compared in the QueryServer sequence
+			// but it is always possible for the client to force a connection packet
+			// without successful querying, so we should handle it
+        }
+
+        public RequestConnectPacket(byte[] bytes) : base(bytes) { }
+    }
+
+    public class AcceptConnectRequestPacket : Packet
+    {
+        public AcceptConnectRequestPacket() : base(PacketType.AcceptConnectRequest)
+        {
+        }
+
+        public AcceptConnectRequestPacket(byte[] bytes) : base(bytes)
+        {
+        }
+    }
+
+    public class RejectConnectRequestPacket : Packet
+    {
+		public int RejectReasonLengthBytes
+        {
+            get => Payload.ReadInt(0);
+			set => Payload.WriteInt(0, value);
+        }
+        public string RejectReason
+        {
+            get => Encoding.UTF8.GetString(Payload, 4, RejectReasonLengthBytes);
+            set {
+                RejectReasonLengthBytes = GetUTF8ByteLength(value);
                 Encoding.UTF8.GetBytes(value).CopyTo(Payload, 4);
             }
         }
 
-        public RequestJoinServerPacket(string user, string pass) : base(PacketType.RequestJoin)
+        public RejectConnectRequestPacket(string reason) : base(PacketType.RejectConnectRequest)
         {
-			int lengthOfTokens = GetUTF8ByteLength(user) + GetUTF8ByteLength(pass);
-			Payload = new byte[8+lengthOfTokens];
-			Username = user;
-			Password = pass;
+			RejectReason = reason;
         }
 
-        public RequestJoinServerPacket(byte[] bytes) : base(bytes) { }
-    }
-
-    public class AcceptJoinRequestPacket : Packet
-    {
-        public AcceptJoinRequestPacket() : base(PacketType.AcceptJoinRequest)
-        {
-        }
-
-        public AcceptJoinRequestPacket(byte[] bytes) : base(bytes)
-        {
-        }
-    }
-    public class RejectJoinRequestPacket : Packet
-    {
-        public RejectJoinRequestPacket() : base(PacketType.RejectJoinRequest)
-        {
-        }
-
-        public RejectJoinRequestPacket(byte[] bytes) : base(bytes)
-        {
-        }
+        public RejectConnectRequestPacket(byte[] bytes) : base(bytes) { }
     }
 
     public class NotifyDisconnectPacket : Packet
     {
-        public NotifyDisconnectPacket() : base(PacketType.Ignore)
+        public NotifyDisconnectPacket() : base(PacketType.Disconnect)
         {
+
         }
 
         public NotifyDisconnectPacket(byte[] bytes) : base(bytes)
         {
+
         }
     }
+
+	
+
+	public class SpawnEntityPacket : Packet
+	{
+		public EntityType EntityType
+		{
+			get {return EntityType.PeerPlayer;}
+			set {}
+		}
+
+		public Guid AssignedNetworkID
+		{
+			get => new Guid(Payload.ReadString(2, 36, Encoding.ASCII));
+			set => Payload.WriteString(2, value.ToString(), Encoding.ASCII, 36);
+		}
+
+		public Vector2 SpawnPosition
+		{
+			get => Payload.ReadVector2(40);
+			set => Payload.WriteVector2(40, value);
+		}
+
+		public SpawnEntityPacket(EntityType type, Guid assignedNetworkID, Vector2 spawnPos) : base(PacketType.SpawnEntity)
+		{
+			Payload = new byte[64];
+			EntityType = type;
+			AssignedNetworkID = assignedNetworkID;
+			SpawnPosition = spawnPos;
+		}
+
+		public SpawnEntityPacket(byte[] data) : base(data) {}
+	}
+
+	public class DespawnEntityPacket : Packet
+	{
+		public DespawnEntityPacket() : base(PacketType.DespawnEntity)
+		{
+		}
+	}
+
+	public class UpdateEntityPhysicsStatePacket : Packet
+	{
+		public UpdateEntityPhysicsStatePacket() : base(PacketType.UpdateEntityPhysicsState)
+		{
+			
+		}
+	}
+
+	public class EntityActionPacket : Packet
+	{
+		public EntityActionPacket() : base(PacketType.EntityAction)
+		{
+		}
+	}
+
+
+	public class DownloadMapPacket : Packet
+	{
+		public DownloadMapPacket(PacketType type) : base(type)
+		{
+		}
+	}
+
+
+
 }

@@ -7,7 +7,7 @@ namespace Wasteland.Client
 
     public interface IContext : IDisposable
     {
-		public IGameClient GameClient {get; set;}
+		public WastelandClient GameClient {get; set;}
 		bool Running {get;set;}
 		void Update(GameTime gt);
 		void Draw();
@@ -19,11 +19,11 @@ namespace Wasteland.Client
     public abstract class Context : IContext
     {
 
-		public Context(IGameClient client)
+		public Context(WastelandClient client)
 		{
 			GameClient = client;
 		}
-        public IGameClient GameClient {get;set;}
+        public WastelandClient GameClient {get;set;}
         public bool Running {get;set;}
 
         public virtual void Dispose() { }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
-using Conarium.Services;
+using Conarium;
 
 namespace Wasteland.Client
 {

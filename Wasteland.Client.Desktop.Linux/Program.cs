@@ -7,8 +7,8 @@ namespace Wasteland.Client.Desktop.Linux
         [STAThread]
         static void Main(string[] args)
         {
-            using (var game = new LinuxClientApp())
-                game.Run();
+            var game = new LinuxClientApp();
+            game.Run();
         }
     }
 }

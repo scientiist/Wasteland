@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Conarium;
 using System.Linq;
+using Wasteland.Common;
 
 namespace Wasteland.Server.Linux
 {
@@ -24,7 +25,6 @@ namespace Wasteland.Server.Linux
 
     public struct BufferString
     {
-
         public BufferString(List<ColoredString> strings)
         {
             int fullTextLength = 0;

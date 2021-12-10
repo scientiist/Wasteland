@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Conarium.Services
+namespace Conarium
 {
 
 
@@ -216,6 +216,7 @@ namespace Conarium.Services
             List<Vector2> c = ShapeCache.GetCircle(radius, sides);
             Polygon(color, position, c, thickness);
         }
+		
         public void Line(Color color, Vector2 point, float length, Rotation angle, float thickness = 1)
         {
             Vector2 origin = new Vector2(0f, 0.5f);
@@ -226,11 +227,10 @@ namespace Conarium.Services
         {
             float distance = Vector2.Distance(point1, point2);
             float angle = (float)Math.Atan2(point2.Y - point1.Y, point2.X - point1.X);
-
             float expanded = (float)Math.Floor(angle * Math.PI);
             float backDown = expanded / (float)Math.PI;
 
-            Line(color, point1, distance, Rotation.FromRad(angle), thickness);
+            Line(color, point1, distance, new Rotation(angle), thickness);
         }
         public void OutlineRect(Color color, Vector2 position, Vector2 size, float thickness = 2.0f)
         {
@@ -263,6 +263,15 @@ namespace Conarium.Services
                 new Rectangle(position.ToPoint(), size.ToPoint()),
                 null,
                 color, rotation.Degrees, new Vector2(0, 0), SpriteEffects.None, 0
+            );
+        }
+		public void Rect(Color color, Vector2 position, Vector2 size, Rotation rotation, Vector2 origin)
+        {
+            SpriteBatch.Draw(
+                pixel,
+                new Rectangle(position.ToPoint(), size.ToPoint()),
+                null,
+                color, rotation.Degrees, origin, SpriteEffects.None, 0
             );
         }
         public void Sprite(Texture2D texture, Vector2 position) => Sprite(texture, position, Color.White);
@@ -329,6 +338,40 @@ namespace Conarium.Services
 			var vertices = new[] { new VertexPositionColor(pointA, colorA), new VertexPositionColor(pointB, colorB)};
 			GraphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, vertices, 0, 1);
 		}*/
+
+
+		/// <summary>
+		/// Saves a screencap of the game window as a .png file
+		/// </summary>
+		/// <param name="filename">Path to save file as, defaults to a standard DateTime format.</param>
+        public void TakeScreenshot(string filename = "")
+		{	
+			// create folder if nonexistant
+			Directory.CreateDirectory("Screenshots");
+
+			// set default filename
+			if (string.IsNullOrEmpty(filename))
+				filename = Path.Combine("Screenshots", DateTime.Now.ToFileTime()+".png");
+
+			// create pixel buffer that matches window size Width*Height
+			int Width = GraphicsDevice.Viewport.Width;
+			int Height = GraphicsDevice.Viewport.Height;
+			Color[] captureBuffer = new Color[Width * Height];
+
+			// copy screen pixel-for-pixel into color(pixel) buffer;
+			GraphicsDevice.GetBackBufferData<Color>(captureBuffer);
+
+			// create temporary Texture2D
+			using (Texture2D tex2D = new Texture2D(GraphicsDevice, Width, Height))
+			{
+				// push buffer data into texture
+				tex2D.SetData<Color>(captureBuffer);
+
+				// monogame api has method to save Texture2D as PNG :D
+				using (FileStream stream = File.Create(filename))
+					tex2D.SaveAsPng(stream, Width, Height);
+			}
+		}
 
     }
 }

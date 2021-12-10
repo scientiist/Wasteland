@@ -2,7 +2,8 @@ using System;
 
 namespace Wasteland.Server
 {
-    public class HeadlessServer
+    public class HeadlessServer : BaseServer
     {
+		
     }
 }

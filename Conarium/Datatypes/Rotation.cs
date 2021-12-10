@@ -11,6 +11,8 @@ namespace Conarium.Datatypes
     {
 		#region static reference members
         public static Rotation Zero = new Rotation(0);
+
+		public static Rotation PiOverTwo = new Rotation((float)Math.PI/2);
         public static Rotation Pi = new Rotation((float)Math.PI);
         public static Rotation TwoPi = new Rotation((float)Math.PI * 2);
         public static Rotation RightAngle = new Rotation(90);
