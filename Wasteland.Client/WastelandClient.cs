@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using System.IO;
 using Conarium;
-using Conarium.Services;
 using Conarium.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,43 +13,48 @@ using Wasteland.Server;
 
 namespace Wasteland.Client
 {
-	public interface IGameClient
-	{
-		IContext CurrentContext {get;set;}
-		Game GameReference {get;}
-
-		void ConnectToServer(string address);
-	}
-
-    public class WastelandClient : Game, IGameClient
+	/// <summary>
+	/// Base Game Client implementation for Wasteland.
+	/// </summary>
+    public class WastelandClient : Game
     {
-		#region Game-centric metadata
 		public readonly static string CurrentVersion = "0.1";
 
-		#endregion
-
-		public Game GameReference => this;
-        
 
         #region Conarium Services
-        public Conarium.Services.AssetService    AssetService    {get; private set;}
-        public Conarium.Services.GraphicsService GraphicsService {get; private set;}
-        public Conarium.Services.InputService    InputService    {get; private set;}
+        public AssetService    AssetService    {get; private set;}
+        public GraphicsService GraphicsService {get; private set;}
+        public InputService    InputService    {get; private set;}
 
-		public Settings Configuration {get;set;}
+
+		public Settings Settings {get;set;}
         
 		public GameClient SessionInstance {get; private set;}
 		#endregion
 
-        private GraphicsDeviceManager GraphicsDeviceManager;
+        
 		#region Game Objects
-        public GameConsole GameConsole {get; set;}
+        
         public Camera2D Camera {get;set;}
         //public Splash Splash {get; private set;}
         public FPSTracker FPSTracker {get; private set;}
 		#endregion
-        Vector2 CanvasResolution {get; set;}
 
+		// Splash itself is not a game context
+		// it probably should be; however i'll have to come up with a hack for fading out
+		Splash Splash;
+
+
+		private GraphicsDeviceManager GraphicsDeviceManager;
+
+		/// <summary>
+		/// Current game logic context. 
+		/// Contexts are mutually-exclusive gamestates that run relevant logic.
+		/// Updating the property automatically calls 
+		/// Unload() and Dispose() on the old context,
+		/// and runs Load() on the new context.
+		/// </summary>
+		/// <value></value>
 		public IContext CurrentContext 
 		{
 			get => currContext;
@@ -63,13 +68,20 @@ namespace Wasteland.Client
 		}
 		private IContext currContext;
 		
-		Splash Splash;
-        //MainMenu MainMenu;
-        WindowNode SettingsMenu;
+	
+
+		// Window interfaces. can have multiple open simultaneously
+		// and usually at any point during the game. (i.e non-contextual)
+
+		public GameConsole GameConsole {get; set;}
+
+        public SettingsWindow SettingsMenu {get;set;}
+
 
 		public WastelandClient()
         {
-            
+
+  
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
@@ -84,17 +96,25 @@ namespace Wasteland.Client
                 PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
             };
 
-            CanvasResolution = new Vector2(1920, 1080);
 
             
             Camera = new Camera2D(this);
             
 
 			Splash = new Splash(this);
-			Configuration = Settings.Load<Settings>("settings.xml", true);
+
+			Settings = Settings.LoadSettings(this, "settings.xml");
+			
+			// TODO: Load settings
             SetFullscreen(false);
             SetVSync(false);
             GraphicsDeviceManager.ApplyChanges();
+		}
+
+
+		protected virtual void LoadAndApplySettings()
+		{
+
 		}
 
 		public void ConnectToServer(string address)
@@ -103,32 +123,15 @@ namespace Wasteland.Client
 			server.Logger = GameConsole; 
 			Task.Factory.StartNew(server.Start);
 			var client = new GameClient(this);
-			//TODO: client.OnShutdown += server.Shutdown;
+			client.OnShutdown += server.Shutdown;
 			CurrentContext = client;
 			client.Connect(address);
 		}
 
 		#region Settings-Related Methods
-        public void TakeScreenshot(string filename = "")
-		{
-			Color[] colors = new Color[GraphicsDevice.Viewport.Width * GraphicsDevice.Viewport.Height];
+		
 
-			GraphicsDevice.GetBackBufferData<Color>(colors);
 
-			using (Texture2D tex2D = new Texture2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height))
-			{
-				Directory.CreateDirectory("Screenshots");
-				tex2D.SetData<Color>(colors);
-				if (string.IsNullOrEmpty(filename))
-				{
-					filename = Path.Combine("Screenshots", DateTime.Now.ToFileTime()+".png");
-				}
-				using (FileStream stream = File.Create(filename))
-				{
-					tex2D.SaveAsPng(stream, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-				}
-			}
-		}
 
         // Update graphics engine's known window size
 		void Window_ClientSizeChanged(object sender, EventArgs e) {
@@ -142,6 +145,7 @@ namespace Wasteland.Client
 			this.GraphicsDeviceManager.IsFullScreen = full;
 			if (full == true)
 			{
+				
 				GraphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
 				GraphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 			}
@@ -149,7 +153,6 @@ namespace Wasteland.Client
 			{
 				GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
 				GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
-                CanvasResolution = new Vector2(1920, 1080);
 			}
 			GraphicsDeviceManager.ApplyChanges();
 		}
@@ -162,8 +165,6 @@ namespace Wasteland.Client
         {
             GraphicsDeviceManager.PreferredBackBufferWidth = width;
 			GraphicsDeviceManager.PreferredBackBufferHeight = height;
-            //GraphicsService?.UpdateWindowSize(new Vector2(width, height));
-			CanvasResolution = new Vector2(width, height);
 			GraphicsDeviceManager.ApplyChanges();
         }
 
@@ -193,7 +194,17 @@ namespace Wasteland.Client
             Components.Add(FPSTracker);
 
             GameConsole = new GameConsole(this);
+
+			GameConsole.BindCommand(new Common.Command("serv_start"));
+			GameConsole.BindCommand(new Common.Command("serv_stop"));
+
             Components.Add(GameConsole);
+
+
+			SettingsMenu = new SettingsWindow(this);
+			Components.Add(SettingsMenu);
+
+
         }
 
         protected override void Initialize()
@@ -201,6 +212,7 @@ namespace Wasteland.Client
 
             CreateServices();
 
+			// initalize to main menu
 			CurrentContext = new MainMenu(this);
 
             // bind callback to listen for window resize
@@ -219,13 +231,11 @@ namespace Wasteland.Client
         }
         protected override void Update(GameTime gameTime)
         {
+			if (InputService.KeyPressed(Keys.F2))
+				GraphicsService.TakeScreenshot();
 
-
-
-
-			var state = GamePad.GetState(0);
-			Console.WriteLine(state);
-			
+			if (InputService.KeyPressed(Keys.F3))
+				SetFullscreen(!GraphicsDeviceManager.IsFullScreen);
             
 			if (CurrentContext!=null && CurrentContext.Running)
 				CurrentContext?.Update(gameTime);
@@ -235,9 +245,8 @@ namespace Wasteland.Client
 
             Mouse.SetCursor(MouseCursor.Arrow);
 
-            if (Settings.Get().Keybindings.OpenGameConsole.IsDown())
+            if (Settings.Keybindings.OpenGameConsole.Pressed())
             {
-                Console.WriteLine("Fucking hell");
                 GameConsole.Open = !GameConsole.Open;
             }
                 
@@ -248,7 +257,6 @@ namespace Wasteland.Client
 			Splash?.Update(gameTime);
 			if (Splash != null && Splash.SplashTimer < 0)
 			{
-				Console.WriteLine("Bye bye Splash");
 				Splash.Unload();
 				Splash = null;
 			}
