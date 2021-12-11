@@ -105,10 +105,13 @@ namespace Wasteland.Client
 			Entity spawned = null;
 			switch(packet.EntityType)
 			{
+				// how will serialization work for entities that require different data?
+				// solution 1: each entity gets it's own spawn packet
+				// solution 2: pass bytecode to entity constructor.
 				case EntityType.PeerPlayer:
 					spawned = new PeerPlayer(packet.AssignedNetworkID)
 					{
-
+						
 					};
 					break;
 				case EntityType.Player:

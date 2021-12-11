@@ -10,11 +10,17 @@ using Microsoft.Xna.Framework.Input;
 using TiledCS;
 using Wasteland.Client.Menus;
 using Wasteland.Server;
+using Wasteland.Common;
 
 namespace Wasteland.Client
 {
+
+	// NOTE: GameClient refers to actual instances of game sessions.
+	//	
+	//
+	//
 	/// <summary>
-	/// Base Game Client implementation for Wasteland.
+	/// Base Game Class implementation for Wasteland.
 	/// </summary>
     public class WastelandClient : Game
     {
@@ -22,23 +28,17 @@ namespace Wasteland.Client
 
 
         #region Conarium Services
+		// Conarium Engine Services
+		// Singleton instances that provide core functionality
         public AssetService    AssetService    {get; private set;}
         public GraphicsService GraphicsService {get; private set;}
         public InputService    InputService    {get; private set;}
-
+		#endregion
 
 		public Settings Settings {get;set;}
-        
-		public GameClient SessionInstance {get; private set;}
-		#endregion
-
-        
-		#region Game Objects
-        
+		public GameClient SessionInstance {get; private set;}        
         public Camera2D Camera {get;set;}
-        //public Splash Splash {get; private set;}
         public FPSTracker FPSTracker {get; private set;}
-		#endregion
 
 		// Splash itself is not a game context
 		// it probably should be; however i'll have to come up with a hack for fading out
@@ -196,16 +196,16 @@ namespace Wasteland.Client
             GameConsole = new GameConsole(this);
 
 			GameConsole.BindCommand(new Common.Command("serv_start"));
-			GameConsole.BindCommand(new Common.Command("serv_stop"));
+			GameConsole.BindCommand(new Command("serv_stop"));
 
             Components.Add(GameConsole);
 
 
 			SettingsMenu = new SettingsWindow(this);
 			Components.Add(SettingsMenu);
-
-
         }
+
+		public static List<Command>
 
         protected override void Initialize()
         {
