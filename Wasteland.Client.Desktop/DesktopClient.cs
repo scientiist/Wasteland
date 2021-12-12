@@ -5,7 +5,7 @@ using Wasteland.Client;
 namespace Wasteland.Client.Desktop
 {
 
-    public class DesktopClient : WastelandClient
+    public class DesktopClient : WastelandGameClient
     {
         protected override void Initialize()
         {

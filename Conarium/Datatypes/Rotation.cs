@@ -6,18 +6,14 @@ using System.Collections.Generic;
 namespace Conarium.Datatypes
 {
 
-
     public struct Rotation : IEquatable<Rotation>
     {
 		#region static reference members
-        public static Rotation Zero = new Rotation(0);
-
-		public static Rotation PiOverTwo = new Rotation((float)Math.PI/2);
-        public static Rotation Pi = new Rotation((float)Math.PI);
-        public static Rotation TwoPi = new Rotation((float)Math.PI * 2);
-        public static Rotation RightAngle = new Rotation(90);
-        public const float PI = MathHelper.Pi;
-
+        public readonly static Rotation Zero       = new(0);
+		public readonly static Rotation PiOverTwo  = new(MathHelper.Pi/2);
+        public readonly static Rotation Pi         = new(MathHelper.Pi);
+        public readonly static Rotation TwoPi      = new(MathHelper.Pi * 2);
+        public readonly static Rotation RightAngle = new(90);
 		#endregion
 
 
@@ -29,6 +25,17 @@ namespace Conarium.Datatypes
 			set => Radians = MathHelper.ToRadians(value);
 		}
 		public float NormalizedDegrees => Degrees%TwoPi.Degrees;
+
+		public Rotation(float radians)
+		{
+			Radians = radians;
+		}
+
+		public Rotation(Vector2 unitVector)
+		{
+			Radians = UnitVectorToRadians(unitVector);
+		}
+
 
 		// Static Math Formulae
 		public static float UnitVectorToRadians(Vector2 unit)
@@ -48,16 +55,7 @@ namespace Conarium.Datatypes
         public Vector2 ToUnitVector() => RadiansToUnitVector(this.Radians);
 
 
-		public Rotation(float radians)
-		{
-			Radians = radians;
-		}
-
-		public Rotation(Vector2 unitVector)
-		{
-			Radians = UnitVectorToRadians(unitVector);
-		}
-
+		
         //public static Rotation FromDeg(float degree)
         //{
             //return new Rotation { Radians = MathHelper.ToRadians(degree) }; //Degrees = degree };
@@ -69,15 +67,14 @@ namespace Conarium.Datatypes
 
 		public void Normalize()
 		{
-			Radians = Radians%TwoPi.Radians;
+			Radians %= TwoPi.Radians;
 		}
 
 		#region Operators
 		// having to write these operators both ways is a hassle
 
 		// arithmetic operators
-		public static Rotation operator +(Rotation a, Rotation b)
-			=> new Rotation(a.Radians + b.Radians);
+		public static Rotation operator +(Rotation a, Rotation b) => new (a.Radians + b.Radians);
 		public static Rotation operator -(Rotation a, Rotation b)
 			=> new Rotation(a.Radians - b.Radians);
 		public static Rotation operator +(Rotation a, float b)
@@ -125,7 +122,7 @@ namespace Conarium.Datatypes
 
         public bool CloseEnough(float rad, float toleranceDegrees = 1.0f)
         {
-            return Math.Abs(Radians - rad) < (toleranceDegrees * (PI / 180.0f));
+            return Math.Abs(Radians - rad) < (toleranceDegrees * (MathHelper.Pi / 180.0f));
         }
 
 		public bool CloseEnough(Rotation rot, float toleranceDegrees = 1.0f)

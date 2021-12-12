@@ -126,7 +126,7 @@ namespace Wasteland.Client.Menus
 
 
 
-		public MainMenu(WastelandClient client) : base(client)
+		public MainMenu(WastelandGameClient client) : base(client)
 		{
 
 			

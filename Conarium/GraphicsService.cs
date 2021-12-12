@@ -74,6 +74,7 @@ namespace Conarium
             return circleDef;
         }
     }
+	//"/home/joosh/Projects/Wasteland/Wasteland.Client.Desktop.Linux/bin/Debug/netcoreapp6.0/GameData/Assets/Fonts"
     public class FontManager
     {
         public SpriteFont Arial8 { get; private set; }
@@ -90,7 +91,7 @@ namespace Conarium
         public void LoadAssets(string sourcePath, ContentManager Content)
         {
             
-            Content.RootDirectory = Path.Combine(sourcePath, "Assets", "Fonts");
+            Content.RootDirectory = Path.Combine(sourcePath, "Fonts");
             Arial8 = Content.Load<SpriteFont>("Arial8");
             Arial10 = Content.Load<SpriteFont>("Arial10");
             Arial12 = Content.Load<SpriteFont>("Arial12");
@@ -148,7 +149,7 @@ namespace Conarium
 
             FontsLoaded = true; // if
             if (LoadFonts)
-                Fonts.LoadAssets("GameData", ContentManager);
+                Fonts.LoadAssets("Wasteland.Assets", ContentManager);
         }
         FontManager fonts;
         public FontManager Fonts 

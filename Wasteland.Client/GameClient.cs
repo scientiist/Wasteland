@@ -42,19 +42,12 @@ namespace Wasteland.Client
 
 		Dictionary<PacketType, NetworkListener> NetworkEvents;
 
-        public GameClient(WastelandClient client) : base(client) 
+
+	
+        public GameClient(WastelandGameClient client) : base(client) 
         {
-			NetworkEvents = new Dictionary<PacketType, NetworkListener>()
-			{
-				[PacketType.AcceptConnectRequest] = OnConnectApproved,
-				[PacketType.RejectConnectRequest] = OnConnectRejected,
-				[PacketType.SpawnEntity] = OnSpawnEntity,
-				[PacketType.DespawnEntity] = OnDespawnEntity,
-				[PacketType.UpdateEntityPhysicsState] = OnEntityPhysicsUpdated,
-				[PacketType.EntityAction] = OnEntityAction,
-			};
-
-
+			InitializePacketDecoderMethods();
+			
 			World = new Gameworld();
 			World.Entities.Add(new Vehicle(Guid.Empty) {
 				Position = new Vector2(600, 500),
@@ -65,6 +58,16 @@ namespace Wasteland.Client
 				MaxTurnRadius = 45f,
 			});
         }
+
+		private void InitializePacketDecoderMethods() => NetworkEvents = new() {
+
+			[PacketType.AcceptConnectRequest]     = OnConnectApproved,
+			[PacketType.RejectConnectRequest]     = OnConnectRejected,
+			[PacketType.SpawnEntity]              = OnSpawnEntity,
+			[PacketType.DespawnEntity]            = OnDespawnEntity,
+			[PacketType.UpdateEntityPhysicsState] = OnEntityPhysicsUpdated,
+			[PacketType.EntityAction]             = OnEntityAction,
+		};
 
 		public void Connect(string address)
         {
@@ -86,6 +89,8 @@ namespace Wasteland.Client
 			var packet = new AcceptConnectRequestPacket(msg.Packet.GetBytes());
 
 			Status = ConnectionStatus.Connected;
+
+
 		}
 
 		void OnConnectRejected(NetworkMessage msg)
@@ -129,17 +134,11 @@ namespace Wasteland.Client
 				World.Entities.Add(spawned);
 				LogService.Log(this, $"");
 			}
-
-			
 		}
 
 		void OnDespawnEntity(NetworkMessage msg) { }
 		void OnEntityPhysicsUpdated(NetworkMessage msg) { }
 		void OnEntityAction(NetworkMessage msg) { }
-
-
-        
-
 		void OnServerRespondsToInterrogation(NetworkMessage data)
 		{
 			var packet = new QueryResponsePacket(data.Packet.GetBytes());
@@ -154,9 +153,31 @@ namespace Wasteland.Client
 		}
 		#endregion
 
+		private void ReadPacketsFromServer()
+		{
+			// sugma
+			while (NetworkManager.HaveIncomingMessage())
+			{
+				var nextMsg = NetworkManager.GetLatestMessage();
+
+
+				foreach(var eventSignature in NetworkEvents)
+				{
+					if (eventSignature.Key == nextMsg.Packet.Type)
+					{
+						// TODO: keep track of keepalive between us and server
+						eventSignature.Value?.Invoke(nextMsg);
+					}
+				}
+			}
+		}
+
 		public override void Update(GameTime gt)
 		{
 			NetworkManager.Update(gt);
+
+			ReadPacketsFromServer();
+
 			base.Update(gt);
 
 			World.Update(gt);

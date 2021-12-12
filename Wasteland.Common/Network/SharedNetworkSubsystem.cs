@@ -10,8 +10,8 @@ using Conarium.Generic;
 using Microsoft.Xna.Framework;
 using System.Linq;
 
-namespace Wasteland.Common.Network
-{
+namespace Wasteland.Common.Network;
+
 
     public class OutgoingPayload
     {
@@ -200,4 +200,3 @@ namespace Wasteland.Common.Network
             LatestSendTimestamp = DateTime.Now;
         }
     }
-}

@@ -154,14 +154,14 @@ namespace Wasteland.Client
     public class Settings : XMLConfiguration
     {
 
-		public static Settings LoadSettings(WastelandClient client, string path)
+		public static Settings LoadSettings(WastelandGameClient client, string path)
 		{
 			var sets = Wasteland.Client.Settings.Load<Settings>(path, true);
 			sets.Game = client;
 			return sets;
 		}
 
-		WastelandClient Game;
+		WastelandGameClient Game;
 
 		[XmlIgnore] static Settings Instance;
 

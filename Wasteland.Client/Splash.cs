@@ -12,7 +12,7 @@ namespace Wasteland.Client
 		public bool SplashActive => (SplashTimer > 0);
 		public float SplashTimer { get; set; }
 
-        public Splash(WastelandClient client) : base(client)
+        public Splash(WastelandGameClient client) : base(client)
         {
 			SplashTimer = 3;
         }
