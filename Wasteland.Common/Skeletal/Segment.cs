@@ -2,14 +2,38 @@ using Conarium;
 using Conarium.Datatypes;
 
 namespace Wasteland.Common.Skeletal;
+
+protected static class Triangulation
+{
+	public static Vector2 Solve(float sideA, float sideB, float sideC)
+	{
+		var result = new Vector2(0,0);
+		
+		if (sideA > 0)
+			result.X = (sideC*sideC - sideB*sideB + sideA*sideA) / (2*sideA);
+		result.Y = Math.Sqrt(c*c - result.X*result.X);
+		return result;
+	}
+	
+}
 // vscode hasnt yet caught up to C# 10
 // so the first class signature is linted incorrectly
-public class Segment
+public class Bone
 {
-	public Segment NextSegment {get;set;}
-	public bool ArticulationAngleIsAbsolute {get;set;}
+	public Joint RootJoint {get;set;}
+	public Joint EndJoint {get;set;}
+	public List<Joint> Joints {get;set;}
+	public bool AngleIsAbsolute {get;set;}
+	public Rotation Angle {get;set;}
 
-	public Rotation ArticulationAngle {get;set;}
+	public Segment(Joint root)
+	{
+
+	}
+
+	public Vector2 BasePosition => new Vector2(RootJoint.Position);
+
+
 }
 
 
@@ -29,6 +53,8 @@ public class Skeleton
 
 public class Joint
 {
+
+	public Vector2 Position;
 	public Segment UpperSegment;
 	public Segment LowerSegment;
 	public Rotation ChildSegmentDirection;
