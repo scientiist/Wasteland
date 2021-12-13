@@ -1,0 +1,350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent>
+  <Asset Type="SkeletalAnimation.SkeletonAnimation">
+    <KeyframeAnimation>
+      <Keyframes>
+        <Keyframe>
+          <FrameNumer>0</FrameNumer>
+          <Position>10 100</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+      </Keyframes>
+      <Length>40</Length>
+      <Framerate>12</Framerate>
+    </KeyframeAnimation>
+    <KeyframeAnimation>
+      <Keyframes>
+        <Keyframe>
+          <FrameNumer>0</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.3665199</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>7</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>8</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.026</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>12</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.052</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>14</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.052</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>16</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.052</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>20</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.288</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>24</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.367</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>34</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.026</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>39</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.367</Rotation>
+        </Keyframe>
+      </Keyframes>
+      <Length>40</Length>
+      <Framerate>12</Framerate>
+    </KeyframeAnimation>
+    <KeyframeAnimation>
+      <Keyframes>
+        <Keyframe>
+          <FrameNumer>0</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.5497798</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>7</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>8</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.157</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>12</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.471</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>14</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.55</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>16</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.55</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>20</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.367</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>24</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.524</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>34</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.052</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>39</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.497</Rotation>
+        </Keyframe>
+      </Keyframes>
+      <Length>40</Length>
+      <Framerate>12</Framerate>
+    </KeyframeAnimation>
+
+    <KeyframeAnimation>
+      <Keyframes>
+        <Keyframe>
+          <FrameNumer>0</FrameNumer>
+          <Position>0 1.000002</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>7</FrameNumer>
+          <Position>0 -16</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>8</FrameNumer>
+          <Position>0 -18</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>12</FrameNumer>
+          <Position>0 -13</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>14</FrameNumer>
+          <Position>0 -13</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>16</FrameNumer>
+          <Position>0 -13</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>20</FrameNumer>
+          <Position>0 -13</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>24</FrameNumer>
+          <Position>0 -15</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>34</FrameNumer>
+          <Position>0 -15</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>39</FrameNumer>
+          <Position>0 4</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+      </Keyframes>
+      <Length>40</Length>
+      <Framerate>12</Framerate>
+    </KeyframeAnimation>
+
+    <KeyframeAnimation>
+      <Keyframes>
+        <Keyframe>
+          <FrameNumer>0</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.2356199</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>7</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.183</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>8</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.314</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>12</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.314</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>14</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.314</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>16</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.314</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>20</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.314</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>24</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.105</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>34</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>39</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.105</Rotation>
+        </Keyframe>
+      </Keyframes>
+      <Length>40</Length>
+      <Framerate>12</Framerate>
+    </KeyframeAnimation>
+
+    <KeyframeAnimation>
+      <Keyframes>
+        <Keyframe>
+          <FrameNumer>0</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.07853997</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>7</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.052</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>8</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.026</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>12</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.026</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>14</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.026</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>16</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.026</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>20</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.026</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>24</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.733</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>34</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>0.105</Rotation>
+        </Keyframe>
+        <Keyframe>
+          <FrameNumer>39</FrameNumer>
+          <Position>0 0</Position>
+          <Scale>1 1</Scale>
+          <Rotation>-0.183</Rotation>
+        </Keyframe>
+      </Keyframes>
+      <Length>40</Length>
+      <Framerate>12</Framerate>
+    </KeyframeAnimation>
+  </Asset>
+</XnaContent>
