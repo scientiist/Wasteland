@@ -9,7 +9,8 @@ namespace Conarium.UI
     {
         public ImageNode(string name) : base(name)
         {
-
+            ImageColor = Color.White;
+            
         }
         public Texture2D Image {get;set;}
         public Color ImageColor {get;set;}

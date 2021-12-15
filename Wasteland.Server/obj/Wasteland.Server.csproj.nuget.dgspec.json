@@ -1,0 +1,213 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/kaisaraz/coding/Wasteland/Wasteland.Server/Wasteland.Server.csproj": {}
+  },
+  "projects": {
+    "/home/kaisaraz/coding/Wasteland/Conarium/Conarium.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/kaisaraz/coding/Wasteland/Conarium/Conarium.csproj",
+        "projectName": "Conarium",
+        "projectPath": "/home/kaisaraz/coding/Wasteland/Conarium/Conarium.csproj",
+        "packagesPath": "/home/kaisaraz/.nuget/packages/",
+        "outputPath": "/home/kaisaraz/coding/Wasteland/Conarium/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/kaisaraz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MonoGame.Content.Builder.Task": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            },
+            "MonoGame.Framework.Content.Pipeline": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            },
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            },
+            "tiledcs": {
+              "target": "Package",
+              "version": "[2.4.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/dotnet/sdk/6.0.100/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/kaisaraz/coding/Wasteland/Wasteland.Common/Wasteland.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/kaisaraz/coding/Wasteland/Wasteland.Common/Wasteland.Common.csproj",
+        "projectName": "Wasteland.Common",
+        "projectPath": "/home/kaisaraz/coding/Wasteland/Wasteland.Common/Wasteland.Common.csproj",
+        "packagesPath": "/home/kaisaraz/.nuget/packages/",
+        "outputPath": "/home/kaisaraz/coding/Wasteland/Wasteland.Common/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/kaisaraz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/home/kaisaraz/coding/Wasteland/Conarium/Conarium.csproj": {
+                "projectPath": "/home/kaisaraz/coding/Wasteland/Conarium/Conarium.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "tiledcs": {
+              "target": "Package",
+              "version": "[2.4.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/dotnet/sdk/6.0.100/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/kaisaraz/coding/Wasteland/Wasteland.Server/Wasteland.Server.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/kaisaraz/coding/Wasteland/Wasteland.Server/Wasteland.Server.csproj",
+        "projectName": "Wasteland.Server",
+        "projectPath": "/home/kaisaraz/coding/Wasteland/Wasteland.Server/Wasteland.Server.csproj",
+        "packagesPath": "/home/kaisaraz/.nuget/packages/",
+        "outputPath": "/home/kaisaraz/coding/Wasteland/Wasteland.Server/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/kaisaraz/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/home/kaisaraz/coding/Wasteland/Conarium/Conarium.csproj": {
+                "projectPath": "/home/kaisaraz/coding/Wasteland/Conarium/Conarium.csproj"
+              },
+              "/home/kaisaraz/coding/Wasteland/Wasteland.Common/Wasteland.Common.csproj": {
+                "projectPath": "/home/kaisaraz/coding/Wasteland/Wasteland.Common/Wasteland.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.0.1641, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/dotnet/sdk/6.0.100/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

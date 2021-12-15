@@ -2,7 +2,7 @@ using Conarium;
 using Conarium.Datatypes;
 
 namespace Wasteland.Common.Skeletal;
-
+/*
 protected static class Triangulation
 {
 	public static Vector2 Solve(float sideA, float sideB, float sideC)
@@ -16,6 +16,7 @@ protected static class Triangulation
 	}
 	
 }
+
 // vscode hasnt yet caught up to C# 10
 // so the first class signature is linted incorrectly
 public class Bone
@@ -59,3 +60,4 @@ public class Joint
 	public Segment LowerSegment;
 	public Rotation ChildSegmentDirection;
 }
+*/

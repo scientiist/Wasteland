@@ -86,14 +86,12 @@ namespace Wasteland.Client
 
 			GraphicsDeviceManager = new GraphicsDeviceManager(this)
 			{
-				PreferredBackBufferWidth = 1920,
-				PreferredBackBufferHeight = 1080,
+				PreferredBackBufferWidth = 1280,
+				PreferredBackBufferHeight = 720,
 				SynchronizeWithVerticalRetrace = false,
 				IsFullScreen = false,
 				PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
 			};
-
-
 
 			Camera = new Camera2D(this);
 

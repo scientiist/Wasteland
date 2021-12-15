@@ -1,5 +1,6 @@
-using Microsoft.VisualBasic;
+using System.IO;
 using Conarium;
+using Conarium.Datatypes;
 using Conarium.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,6 +13,8 @@ namespace Wasteland.Client.Menus
 
 		public SceneNode Scene {get;set;}
 		public ListNode ButtonList {get;set;}
+
+		Texture2D TitleTexture;
 
 		ButtonNode MakeMenuButton(string name, string text)
 		{
@@ -88,14 +91,7 @@ namespace Wasteland.Client.Menus
 			var ItchIconButton = MakeMenuButton("exit", "Itch.io Homepage");
 			var DonateCryptoIconButton = MakeMenuButton("exit", "Donate via Bitcoin");
 
-			var title = new TextNode("title")
-			{
-				XAlignment = TextXAlignment.Center,
-				TextColor = Color.Black,
-				Font = GraphicsService.Get().Fonts.Arial30,
-				Text = "Wasteland Online",
-				Parent = background,
-			};
+			
 
 			var bottomBox = new RectNode("bottomBox")
 			{
@@ -137,6 +133,7 @@ namespace Wasteland.Client.Menus
 		public override void Load()
 		{
 			Scene = new SceneNode("root");
+			TitleTexture = AssetService.Get().LoadTexture(Path.Combine("Wasteland.Assets", "title.png"));
 			BuildMenu();
 		}
 
@@ -148,6 +145,13 @@ namespace Wasteland.Client.Menus
 		public override void Draw()
 		{
 			Scene?.Draw();
+			
+			var Graphics = GraphicsService.Get();
+			Graphics.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default);
+			var imageSize = new Vector2(TitleTexture.Width, TitleTexture.Height);
+			var screenCenter = new Vector2(Graphics.WindowSize.X/2, 200);
+			Graphics.Sprite(TitleTexture, screenCenter, null, Color.White, Rotation.Zero, imageSize/2, 8, SpriteEffects.None, 0);
+			Graphics.End();
 		}
 		public override void Update(GameTime gt)
 		{
