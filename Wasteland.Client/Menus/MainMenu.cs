@@ -15,6 +15,7 @@ namespace Wasteland.Client.Menus
 		public ListNode ButtonList {get;set;}
 
 		Texture2D TitleTexture;
+		Texture2D NineSliceTexture;
 
 		ButtonNode MakeMenuButton(string name, string text)
 		{
@@ -22,6 +23,21 @@ namespace Wasteland.Client.Menus
 			{
 				Size = new UIVector(0, 35, 1, 0),
 				Parent = ButtonList,
+			};
+			var nineslice = new NineSliceNode("decor")
+			{
+				Texture = NineSliceTexture,
+				// texture is 240 by 40
+				TextureScale = 2,
+				TopLeftCornerQuad 		= new Rectangle(0, 0, 4, 4),
+				BottomLeftCornerQuad 	= new Rectangle(0, 36, 4, 40),
+				TopRightCornerQuad 		= new Rectangle(240-4, 0, 240, 4),
+				BottomRightCornerQuad 	= new Rectangle(240-4, 40-4, 240, 40),
+				LeftSideQuad 			= new Rectangle(),
+				TopSideQuad 			= new Rectangle(),
+				InteriorQuad 			= new Rectangle(),
+
+				Parent = node,
 			};
 			var subtext = new TextNode("subtext")
 			{
@@ -91,8 +107,6 @@ namespace Wasteland.Client.Menus
 			var ItchIconButton = MakeMenuButton("exit", "Itch.io Homepage");
 			var DonateCryptoIconButton = MakeMenuButton("exit", "Donate via Bitcoin");
 
-			
-
 			var bottomBox = new RectNode("bottomBox")
 			{
 				Position = new UIVector(new Vector2(0,-20), new Vector2(0,1)),
@@ -134,6 +148,7 @@ namespace Wasteland.Client.Menus
 		{
 			Scene = new SceneNode("root");
 			TitleTexture = AssetService.Get().LoadTexture(Path.Combine("Wasteland.Assets", "title.png"));
+			NineSliceTexture = AssetService.Get().LoadTexture(Path.Combine("Wasteland.Assets", "box.png"));
 			BuildMenu();
 		}
 

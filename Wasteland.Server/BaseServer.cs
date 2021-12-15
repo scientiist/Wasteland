@@ -63,7 +63,7 @@ public class BaseServer : ICommandSender, ICommandReciever
 	{
 		foreach(var user in ConnectedUsers)
 		{
-			Console.WriteLine($"{user.Name}");
+			Console.WriteLine($"{user.Username}");
 		}
 	}
 
@@ -99,10 +99,10 @@ public class BaseServer : ICommandSender, ICommandReciever
 			
 			foreach (var user in ConnectedUsers)
 			{
-				if (user.Name.StartsWith(requestedUser))
+				if (user.Username.StartsWith(requestedUser))
 				{
 
-					user.Kick();
+					Kick(user);
 					ConnectedUsers.Remove(user);
 
 					// TODO: actual fucking kick logic
@@ -213,14 +213,28 @@ public class BaseServer : ICommandSender, ICommandReciever
         if (success)
         {
             User newClientPeer = new User();
+            newClientPeer.UserNetworkID = 0; // TODO: convert to guid
+            newClientPeer.Username = packet.Username;
+
             ConnectedUsers.Add(newClientPeer);
-            AcceptConnectRequestPacket accept = new AcceptConnectRequestPacket();
-            NetworkManager.SendPacket(accept, message.Sender);
+            SendTo(new AcceptConnectRequestPacket(), newClientPeer);
 
 			// TODO: Alert new user about existing enitites;
-			Player newPlayer = new Player();
 
-			// TODO: Create user's PlayerEntity;
+
+			Player newPlayer = new Player(new Guid());
+
+            SendToAllExcept(new SpawnEntityPacket(
+                EntityType.PeerPlayer,
+                newPlayer.EntityUUID,
+                newPlayer.Position
+            ), newClientPeer);
+            SendTo(new SpawnEntityPacket(
+                EntityType.Player,
+                newPlayer.EntityUUID,
+                newPlayer.Position
+            ), newClientPeer);
+
         }
         else
         {
@@ -229,6 +243,33 @@ public class BaseServer : ICommandSender, ICommandReciever
         }
     }
 
+    public virtual void SpawnEntity<EType>()
+    where EType : Entity, new()
+    {
+        EType entity = new EType();
+
+
+       
+    }
+
+    public void Kick(User user)
+    {
+        // TODO: Implement KickPlayerPacket;
+        //SendTo(new );
+    }
+
+    public void SendTo(Packet p, User user) => NetworkManager.SendPacket(p, user.EndPoint);
+    public void SendToAll(Packet p) 
+    {
+        foreach(var user in ConnectedUsers)
+            NetworkManager.SendPacket(p, user.EndPoint);
+    }
+    public void SendToAllExcept(Packet p, User exclusion)
+    {
+        foreach (var user in ConnectedUsers)
+            if (!user.Equals(exclusion))
+                NetworkManager.SendPacket(p, user.EndPoint);
+    }
 	
 
     public virtual void Start()
