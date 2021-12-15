@@ -91,6 +91,26 @@ public class BaseServer : ICommandSender, ICommandReciever
             Logger?.Log($"{command.Keyword} {command.Description}", ConsoleColor.DarkGreen, ConsoleColor.White, false);
     }
 
+	void KickUser(CommandEventArgs e)
+	{
+		if (e.Args.Length > 0)
+		{
+			var requestedUser = e.Args[0];
+			
+			foreach (var user in ConnectedUsers)
+			{
+				if (user.Name.StartsWith(requestedUser))
+				{
+
+					user.Kick();
+					ConnectedUsers.Remove(user);
+
+					// TODO: actual fucking kick logic
+				}
+			}
+		}
+	}
+
     void ExitServer(CommandEventArgs e)
     {
         Console.ResetColor();
@@ -133,6 +153,12 @@ public class BaseServer : ICommandSender, ICommandReciever
 			Description = "",
 			Callback = WhoIs,
         });
+		BindCommand(new Command("kick")
+		{
+			Arguments = new List<string>() {"<>"},
+			Description = "",
+			Callback = KickUser,
+		});
         #endregion
 
 
@@ -193,7 +219,7 @@ public class BaseServer : ICommandSender, ICommandReciever
 
 			// TODO: Alert new user about existing enitites;
 			Player newPlayer = new Player();
-			
+
 			// TODO: Create user's PlayerEntity;
         }
         else
@@ -202,6 +228,8 @@ public class BaseServer : ICommandSender, ICommandReciever
             NetworkManager.SendPacket(reject, message.Sender);
         }
     }
+
+	
 
     public virtual void Start()
     {
